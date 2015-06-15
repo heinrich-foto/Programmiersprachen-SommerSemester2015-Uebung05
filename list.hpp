@@ -37,7 +37,7 @@ struct ListIterator
 	ListIterator(ListNode<T>* n):m_node{n} {}
 
 	reference operator*() const { return m_node->m_value; }
-	pointer  operator->() const { return (m_node) ? &m_node : nullptr; }
+	pointer  operator->() const { return (m_node) ? &(m_node->m_value) : nullptr; }
 	const Self& operator++() {
 		// (preincrement) neuer Zustand ist jetzt vorhanden.
 		if (m_node) m_node = m_node->m_next;
@@ -160,10 +160,10 @@ class List
     
     	T back() const { return m_last->m_value; };
 
-    	ListIterator<T> begin() const { return (m_first!=nullptr)?  ListIterator <T>( m_first ) : nullptr; };
+    	ListIterator<T> begin() const { return ListIterator <T>( m_first ); };
 
-    	ListIterator<T> end() const { return nullptr; };
-
+    	ListIterator<T> end() const { return ListIterator<T>(); };
+    						// while not empty (leichter lesbar)
     	void clear() { while (m_first != nullptr) pop_back(); };
 
     	ListIterator<T> insert(ListIterator<T> iter, T value) 

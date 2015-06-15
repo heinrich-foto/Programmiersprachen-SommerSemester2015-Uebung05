@@ -23,6 +23,7 @@ TEST_CASE("add an element with push_front", "[push_front]")
 TEST_CASE("add an element with push_back and access the List from front and back", "[push_back-front-back]")
 {
 	List<int> listofint;
+	REQUIRE(listofint.empty());
     for (int i=1; i<10; i++)
 	{
 		listofint.push_back(i);
@@ -39,6 +40,7 @@ TEST_CASE("should be empty after clearing", "[clear]")
 	list.push_front(2); 
 	list.push_front(3); 
 	list.push_front(4); 
+	REQUIRE(4== list.front());
 	REQUIRE(4 == list.size());
 	list.clear(); 
 	REQUIRE(list.empty());
@@ -52,8 +54,10 @@ TEST_CASE("itterator implementation", "[itterator]")
 	int count = 0;
 	for (auto const& itt:list) REQUIRE(count++==itt);
 	REQUIRE(count==6);
-	REQUIRE(0==*list.begin());
+	REQUIRE(0 == *list.begin()); // 0 cant be an lvalue - schützt vor Zuweisung.
+	REQUIRE(list.front() == *list.begin());
 	REQUIRE(list.end()==nullptr);
+	//REQUIRE(nullptr== list.end()); // invalid operands to binary expression ('nullptr_t' and 'ListIterator<int>')
 
 	auto iter = list.begin();
 	++iter;
@@ -219,10 +223,9 @@ TEST_CASE("std::copy list into vector","copy")
 	list.push_back(4);
 	std::vector<int> vect;
 	std::copy(list.begin(),list.end(),std::back_inserter(vect));
-	auto list_iter = list.begin();
-	for(auto const& item:vect) {
-		REQUIRE(item==*list_iter++);
-	}
+	
+	auto list_iter = list.begin();             // nutzt postincrement
+	for(auto const& item:vect) REQUIRE(item==*list_iter++);
 }
 
 TEST_CASE("list copy Assignment","[list=list2]")
@@ -235,11 +238,13 @@ TEST_CASE("list copy Assignment","[list=list2]")
 	List<int> list2;
 	
 	list2=list;
+	REQUIRE(list == list2);
 	
 	list.push_back(5);
 
 	REQUIRE(5==list.size());
 	REQUIRE(4==list2.size());
+	REQUIRE(list != list2);
 
 	list2.push_back(99);
 
