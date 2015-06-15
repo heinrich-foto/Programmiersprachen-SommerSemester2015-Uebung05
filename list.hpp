@@ -93,12 +93,28 @@ class List
 			other.m_last = nullptr;
 			other.m_size = 0;
         };
-        void swap(List & other); // swaps content of X with *this
+        void swap(List & other) // swaps content of X with *this
+        {	
+        	for (auto const& x: other) this->push_back(x);
+        	std::swap(m_first , other.m_first); 
+        	std::swap(m_last , other.m_last);
+        };
+        
         friend void swap(List& a, List& b) { a.swap(b); };
-        List& operator=(List const& rhs) { // copy assignment
+        
+        List& operator=(List  rhs) { // copy assignment
         	swap(rhs);
         	return *this;
         };
+
+        // auto operator=(List<T>&& rhs) & noexcept -> List<T>& // move assignement
+        // // && R‑Value-Referenzen
+        // /* Die Move-Operationen sind in der Regel sehr effizient. 
+        // Denn im Gegensatz zu den Copy-Operationen muss lediglich eine 
+        // flache Kopie gemacht werden, wobei gleichzeitig das Argument 
+        // in eine Art Leer- beziehungsweise Initialzustand versetzt wird. */
+        // {};
+
 		// http://en.cppreference.com/w/cpp/container/list/empty 
 		bool empty() const { return (m_first== nullptr) && (m_last==nullptr); };
 		// http://en.cppreference.com/w/cpp/container/list/size 
@@ -198,7 +214,7 @@ class List
 
 	friend std::ostream& operator<<(std::ostream& os, List<T> const& list) 
   	{
-  		os << "[";
+  		os << "[ ";
     	for (auto iter = list.begin(); iter!=list.end(); ++iter) {
     		os << *iter;
     		if (iter.m_node->m_next!=nullptr) os << ", ";

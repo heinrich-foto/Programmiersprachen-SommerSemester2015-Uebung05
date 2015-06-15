@@ -189,15 +189,25 @@ TEST_CASE("reverse","[reverse]")
 	
 	List<int> list2(list);
 	list.reverse();
-	// std::cout << list << list2;
 	REQUIRE(list.front()==list2.back());
 
 	reverse(list);
 	REQUIRE(list2==list);
-	// std::cout << std::endl << list << list2;
 	reverse(list); list2.reverse();
-	// std::cout << std::endl << list << list2;
 	REQUIRE(list2==list);
+}
+
+TEST_CASE("ostream","[std::ostream]")
+{
+	List<int> list;
+	list.push_back(1);
+	list.push_back(2);
+	list.push_back(3);
+	list.push_back(4);
+	
+	std::stringstream output;
+	output << list;
+	REQUIRE("[ 1, 2, 3, 4]"==output.str());
 }
 
 TEST_CASE("std::copy list into vector","copy")
@@ -213,6 +223,29 @@ TEST_CASE("std::copy list into vector","copy")
 	for(auto const& item:vect) {
 		REQUIRE(item==*list_iter++);
 	}
+}
+
+TEST_CASE("list copy Assignment","[list=list2]")
+{
+	List<int> list;
+	list.push_back(1);
+	list.push_back(2);
+	list.push_back(3);
+	list.push_back(4);
+	List<int> list2;
+	
+	list2=list;
+	
+	list.push_back(5);
+
+	REQUIRE(5==list.size());
+	REQUIRE(4==list2.size());
+
+	list2.push_back(99);
+
+	REQUIRE(5 ==list2.size());
+	REQUIRE(99==list2.back());
+	REQUIRE(5 == list.back()); 
 }
 
 int main (int argc, char* argv[])
